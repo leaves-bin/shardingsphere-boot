@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bruce.business.mapper.OrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bruce.business.po.Order">
+        <id column="order_no" property="orderNo" />
+        <result column="sku" property="sku" />
+        <result column="price" property="price" />
+        <result column="mobile" property="mobile" />
+    </resultMap>
+
+    <resultMap id="BoResultMap" type="com.bruce.business.bo.OrderBo">
+        <id column="order_no" property="orderNo" />
+        <result column="sku" property="sku" />
+        <result column="price" property="price" />
+        <result column="mobile" property="mobile" />
+        <result column="count" property="count" />
+        <result column="user_name" property="userName" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        order_no, sku, price, mobile
+    </sql>
+
+    <insert id="insertOrder">
+        insert into `order`(order_no, sku, price, mobile,shadow) values(#{orderNo},#{sku},#{price},#{mobile},#{shadow})
+    </insert>
+
+    <select id="selectOrderCount" resultMap="BoResultMap">
+        select sku,count(1) as count from `order` group by sku
+    </select>
+
+    <select id="selectOrderList" resultMap="BaseResultMap">
+        select * from (select * from `order`) a
+    </select>
+
+    <select id="selectOrderUser" resultMap="BoResultMap">
+        select order_no, sku, price, `order`.mobile,`user_name` from `order`
+        left join `users` on `users`.`mobile` = `order`.`mobile`
+    </select>
+
+</mapper>
